@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+  <POU Name="FB_ToggleSwitch" Id="{bd8adc6a-b93b-471d-8430-b3f1af2cbb49}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_ToggleSwitch
+VAR_INPUT
+	switch : BOOL;
+END_VAR
+VAR_OUTPUT
+	status : BOOL;
+END_VAR
+VAR
+	pEdge : BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+IF switch AND NOT pEdge THEN
+	pEdge := TRUE;
+	IF NOT status THEN
+		status := TRUE;
+	ELSE
+		status := FALSE;
+	END_IF
+END_IF
+
+pEdge := switch;]]></ST>
+    </Implementation>
+    <LineIds Name="FB_ToggleSwitch">
+      <LineId Id="45" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="40" Count="4" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="23" Count="1" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

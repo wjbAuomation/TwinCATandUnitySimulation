@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+  <POU Name="FB_SquareWave" Id="{574db9a7-1f9a-471a-a136-1027f64c3fa0}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_SquareWave
+VAR_INPUT
+	PulseLength	: DINT;		// Pulse length in [ms]
+END_VAR
+VAR_OUTPUT
+	Value		: BOOL;
+END_VAR
+VAR
+	Flasher_On	: TON;
+	Edge		: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+Flasher_On(IN := NOT Flasher_On.Q, PT := DINT_TO_TIME(PulseLength));
+
+IF Flasher_On.Q THEN
+	Flasher_On(IN := FALSE);
+	Edge := TRUE;
+END_IF
+
+IF Edge AND Value THEN
+	Value := FALSE;
+	Edge := FALSE;
+ELSIF Edge AND NOT Value THEN
+	Value := TRUE;
+	Edge := FALSE;
+END_IF
+
+]]></ST>
+    </Implementation>
+    <LineIds Name="FB_SquareWave">
+      <LineId Id="11" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="17" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

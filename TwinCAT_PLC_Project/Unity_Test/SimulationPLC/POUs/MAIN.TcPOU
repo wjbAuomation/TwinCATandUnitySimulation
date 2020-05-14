@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+  <POU Name="MAIN" Id="{9ab6868b-4f3c-4c35-b59f-5ea0a58ab847}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	fbWave			: FB_SquareWave;
+	fbToggle		: FB_ToggleSwitch;
+	iPulseLength	: DINT;
+	
+	testInt			: REAL;
+	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+iPulseLength := DataExchange.iVar1;	// helper variable - pulse length in ms
+
+fbWave(PulseLength := iPulseLength);	// instance of FB_SquareWave
+
+DataExchange.bVar1 := fbWave.Value;
+
+fbToggle(
+	switch := DataExchange.button1,
+	status => DataExchange.status1);]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="11" Count="1" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="32" Count="1" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
