@@ -5,9 +5,25 @@
 VAR
 	fbWave			: FB_SquareWave;
 	fbToggle		: FB_ToggleSwitch;
+	
+	fbInletConv		: FB_Conveyor;
+	fbConveyor		: FB_Conveyor;
+	fbConveyor_2	: FB_Conveyor;
+	fbConveyor_3	: FB_Conveyor;
+	
+	fbActuator		: FB_Actuator;
+	
 	iPulseLength	: DINT;
 	
 	testInt			: REAL;
+	sequenceStep	: INT;
+	
+	handover		: BOOL;
+	
+	GoToWork		: BOOL;
+	GoToHome		: BOOL;
+	InWork			: BOOL;
+	InHome			: BOOL;
 	
 END_VAR
 ]]></Declaration>
@@ -21,7 +37,91 @@ DataExchange.bVar1 := fbWave.Value;
 
 fbToggle(
 	switch := DataExchange.button1,
-	status => DataExchange.status1);]]></ST>
+	status => DataExchange.status1);
+
+fbActuator(
+	Sensor_Work := DataExchange.DAC_Sens_Work,
+	Sensor_Home := DataExchange.DAC_Sens_Home,
+	GoToPos_Work := GoToWork,
+	GoToPos_Home := GoToHome,
+	ToPos_Work => DataExchange.DAC_Coil_Work,
+	ToPos_Home => DataExchange.DAC_Coil_Home,
+	InPos_Work => InWork,
+	InPos_Home => InHome);
+	
+fbInletConv(
+	Occupied := 	DataExchange.sensor1,
+	Handover := 	handover AND fbConveyor.Taking,
+	Takeover :=		fbConveyor_3.Giving OR sequenceStep = 10,
+	EnableMotor =>	DataExchange.motor1
+);
+	
+fbConveyor(
+	Occupied := 	DataExchange.sensor2,
+	Handover := 	fbConveyor_2.Taking,
+	Takeover :=		fbInletConv.Giving,
+	EnableMotor =>	DataExchange.motor2
+);
+
+fbConveyor_2(
+	Occupied := 	DataExchange.sensor3,
+	Handover := 	fbConveyor_3.Taking,
+	Takeover :=		fbConveyor.Giving,
+	EnableMotor =>	DataExchange.motor3
+);
+
+fbConveyor_3(
+	Occupied := 	DataExchange.sensor4,
+	Handover := 	fbInletConv.Taking,
+	Takeover :=		fbConveyor_2.Giving,
+	EnableMotor =>	DataExchange.motor4
+);
+
+
+
+CASE sequenceStep OF
+	0: 
+		handover := FALSE;
+		IF DataExchange.pusherRetracted OR NOT DataExchange.pusherExtended THEN
+			IF DataExchange.retracted OR NOT DataExchange.extended THEN
+				DataExchange.extend := TRUE;
+				DataExchange.retract := FALSE;				
+			END_IF
+		ELSE
+			DataExchange.pusherBwd := TRUE;
+			DataExchange.pusherFwd := FALSE;
+		END_IF
+		
+		IF (DataExchange.pusherRetracted OR NOT DataExchange.pusherExtended) AND DataExchange.extended THEN
+			sequenceStep := 10;
+		END_IF
+	10:
+		IF DataExchange.sensor1 AND NOT DataExchange.motor1 THEN
+			DataExchange.pusherFwd := TRUE;
+			DataExchange.pusherBwd := FALSE;
+		END_IF	
+		IF DataExchange.pusherExtended THEN
+			sequenceStep := 20;
+		END_IF
+	20: 
+		DataExchange.pusherBwd := TRUE;
+		DataExchange.pusherFwd := FALSE;
+		IF DataExchange.pusherRetracted THEN
+			sequenceStep := 30;
+		END_IF
+	30: 
+		DataExchange.extend := FALSE;
+		DataExchange.retract := TRUE;	
+		IF DataExchange.retracted THEN
+			handover := TRUE;
+			sequenceStep := 40;
+		END_IF
+	40: 
+		IF NOT DataExchange.sensor1 THEN
+			handover := FALSE;
+			sequenceStep := 0;
+		END_IF
+END_CASE]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
       <LineId Id="11" Count="1" />
@@ -32,6 +132,54 @@ fbToggle(
       <LineId Id="22" Count="0" />
       <LineId Id="21" Count="0" />
       <LineId Id="32" Count="1" />
+      <LineId Id="181" Count="0" />
+      <LineId Id="152" Count="0" />
+      <LineId Id="184" Count="7" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="155" Count="2" />
+      <LineId Id="159" Count="0" />
+      <LineId Id="158" Count="0" />
+      <LineId Id="154" Count="0" />
+      <LineId Id="153" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="160" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="123" Count="2" />
+      <LineId Id="161" Count="0" />
+      <LineId Id="126" Count="1" />
+      <LineId Id="122" Count="0" />
+      <LineId Id="129" Count="2" />
+      <LineId Id="162" Count="0" />
+      <LineId Id="132" Count="1" />
+      <LineId Id="128" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="108" Count="0" />
+      <LineId Id="77" Count="1" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="81" Count="2" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="86" Count="3" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="92" Count="1" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="96" Count="9" />
+      <LineId Id="109" Count="3" />
+      <LineId Id="114" Count="0" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="115" Count="2" />
+      <LineId Id="119" Count="0" />
+      <LineId Id="118" Count="0" />
+      <LineId Id="75" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

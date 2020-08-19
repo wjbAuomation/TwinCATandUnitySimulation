@@ -3,12 +3,41 @@
   <GVL Name="DataExchange" Id="{9a360a08-f702-4c49-ac48-25adf33d55e4}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 VAR_GLOBAL
-	bVar1	: BOOL;
-	iVar1	: DINT;
-	button1 : BOOL;
-	status1 : BOOL;
+	bVar1			: BOOL;
+	iVar1			: DINT;
+	button1 		: BOOL;
+	status1 		: BOOL;
 	
-	sensor1 : BOOL;
+	sensor1 		: BOOL;
+	motor1			: BOOL;
+
+	sensor2			: BOOL;	
+	motor2			: BOOL;
+
+	sensor3			: BOOL;	
+	motor3			: BOOL;
+	
+	sensor4			: BOOL;	
+	motor4			: BOOL;
+	
+	extend  		: BOOL;
+	retract			: BOOL;	
+	extended		: BOOL;
+	retracted		: BOOL;
+	
+	pusherFwd		: BOOL;
+	pusherBwd		: BOOL;
+	
+	pusherExtended	: BOOL;
+	pusherRetracted	: BOOL;
+	
+	DAC_Sens_Work	: BOOL;
+	DAC_Sens_Home	: BOOL;
+	
+	DAC_Coil_Work	: BOOL;
+	DAC_Coil_Home	: BOOL;
+	
+	
 	
 END_VAR]]></Declaration>
   </GVL>

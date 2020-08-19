@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+  <POU Name="FB_Actuator" Id="{7c71a9f5-729d-42a6-9a40-132be4b7169d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Actuator
+VAR_INPUT	
+	Sensor_Work		: BOOL;
+	Sensor_Home		: BOOL;	
+	GoToPos_Work	: BOOL;
+	GoToPos_Home	: BOOL;	
+END_VAR
+VAR_OUTPUT	
+	ToPos_Work		: BOOL;
+	ToPos_Home		: BOOL;	
+	InPos_Work		: BOOL;
+	InPos_Home		: BOOL;		
+END_VAR
+VAR
+	Moving			: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+// Reset Outputs
+ToPos_Work	:= FALSE;
+ToPos_Home	:= FALSE;
+
+// Movement initiated
+IF (Sensor_Home AND GoToPos_Work) OR
+	(Sensor_Work AND GoToPos_Home) OR 
+	(NOT Sensor_Home AND NOT Sensor_Work AND (GoToPos_Work OR GoToPos_Home))THEN
+	Moving := TRUE;
+END_IF
+
+// Position reached
+InPos_Home := Sensor_Home AND NOT Sensor_Work;
+InPos_Work := Sensor_Work AND NOT Sensor_Home;
+
+IF (InPos_Home AND GoToPos_Home) THEN
+	Moving := FALSE;
+END_IF
+
+IF (InPos_Work AND GoToPos_Work) THEN
+	Moving := FALSE;
+END_IF
+
+// Trigger outputs when valid move initiated
+IF Moving AND GoToPos_Work THEN
+	ToPos_Work := TRUE;
+END_IF
+
+IF Moving AND GoToPos_Home THEN
+	ToPos_Home := TRUE;
+END_IF
+	
+	
+	
+	]]></ST>
+    </Implementation>
+    <LineIds Name="FB_Actuator">
+      <LineId Id="64" Count="3" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="37" Count="1" />
+      <LineId Id="45" Count="1" />
+      <LineId Id="52" Count="10" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="68" Count="2" />
+      <LineId Id="72" Count="1" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

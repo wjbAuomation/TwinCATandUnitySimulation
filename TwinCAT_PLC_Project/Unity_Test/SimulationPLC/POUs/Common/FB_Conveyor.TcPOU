@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+  <POU Name="FB_Conveyor" Id="{20a31204-5f1b-4ba7-95ba-c89133dce1b5}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Conveyor
+VAR_INPUT
+	Occupied	: BOOL;
+	Takeover	: BOOL;
+	Handover	: BOOL;
+END_VAR
+VAR_OUTPUT
+	EnableMotor	: BOOL;
+	Taking		: BOOL;
+	Giving		: BOOL;
+END_VAR
+VAR
+	transportState	: INT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+CASE transportState OF
+	0:
+	// Init
+		Taking 		:= FALSE;
+		Giving 		:= FALSE;
+		EnableMotor := FALSE;
+		transportState := 10;
+	10:
+	// Takeover or handover
+		IF NOT Occupied THEN
+			Taking 			:= TRUE;
+			Giving 			:= FALSE;
+			transportState 	:= 20;	
+		ELSE
+			Taking 			:= FALSE;
+			Giving 			:= TRUE;
+			transportState 	:= 200;
+		END_IF
+	20:
+	// Takeover start
+		IF Takeover THEN
+			EnableMotor 	:= TRUE;
+			transportState 	:= 21;
+		END_IF		
+	21:
+	// Occupied
+		IF Occupied THEN
+			EnableMotor 	:= FALSE;
+			Taking			:= FALSE;
+			transportState 	:= 10;	
+		END_IF		
+	200:
+	// Handover start
+		IF Handover THEN
+			Giving 			:= TRUE;
+			EnableMotor 	:= TRUE;
+			transportState 	:= 210;	
+		END_IF
+	210:
+	// Handover completed
+		IF NOT Occupied AND NOT Handover THEN
+			EnableMotor		:= FALSE;
+			Giving			:= FALSE;
+			transportState 	:= 10;	
+		END_IF
+END_CASE
+
+]]></ST>
+    </Implementation>
+    <LineIds Name="FB_Conveyor">
+      <LineId Id="12" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="50" Count="1" />
+      <LineId Id="93" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="54" Count="1" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="70" Count="2" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="92" Count="0" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="96" Count="3" />
+      <LineId Id="101" Count="1" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="28" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
