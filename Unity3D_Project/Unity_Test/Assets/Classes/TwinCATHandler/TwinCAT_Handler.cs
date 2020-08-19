@@ -33,7 +33,7 @@ public class TwinCAT_Handler : ITwinCatHandler
         }
         catch (AdsErrorException)
         {
-            Debug.LogError("TC Read Error - Bool");
+            Debug.LogError("TC Read Error - Bool" + pou+"."+variableName);
             return false;
         }
     }
@@ -49,7 +49,7 @@ public class TwinCAT_Handler : ITwinCatHandler
         }
         catch (AdsErrorException)
         {
-            Debug.LogError("TC Read Error - Int");            
+            Debug.LogError("TC Read Error - Int" + pou + "." + variableName);            
         }
         return (int)value;
     }
@@ -81,7 +81,7 @@ public class TwinCAT_Handler : ITwinCatHandler
         }
         catch (AdsErrorException exp)
         {
-            Debug.LogError("TC Write Error - Int" + exp.Message);
+            Debug.LogError("TC Write Error - Int" + pou + "." + variableName +" Details: "+ exp.Message);
         }
         return false;
     }

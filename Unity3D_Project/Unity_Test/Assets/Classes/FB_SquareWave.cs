@@ -3,18 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FB_SquareWave : MonoBehaviour, IRequireTwinCatHandler
+public class FB_SquareWave : SimulationObject
 {
 
     [SerializeField]
-    //public TwinCAT_Handler _tcHandler;
-    public string sPouName;
-    public string sStateName;
     public string sPulseLengthName;
-    public int iPulseLength;
-
-    public ITwinCatHandler TwinCatHandler { get; set; }
-    
+    public int iPulseLength;       
 
     private int iLastWrittenPulseLength;
     private bool bState;
@@ -34,7 +28,7 @@ public class FB_SquareWave : MonoBehaviour, IRequireTwinCatHandler
 
     private void readState()
     {
-        bState = TwinCatHandler.ReadBool(sPouName, sStateName);
+        bState = TwinCatHandler.ReadBool(pouName, varName);
         toggleColor(bState);
     }
 
@@ -42,7 +36,7 @@ public class FB_SquareWave : MonoBehaviour, IRequireTwinCatHandler
     {
         if(iLastWrittenPulseLength != iPulseLength)
         {
-            if(TwinCatHandler.WriteInt(sPouName, sPulseLengthName, iPulseLength))
+            if(TwinCatHandler.WriteInt(pouName, sPulseLengthName, iPulseLength))
             {
                 iLastWrittenPulseLength = iPulseLength;
             }

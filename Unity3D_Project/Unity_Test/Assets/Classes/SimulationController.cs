@@ -22,7 +22,7 @@ public class SimulationController : MonoBehaviour
         twinCatHandler.InitializeConnection();
 
         // Find all elements that require TwinCat handler
-        var elements = FindObjectsOfType<MonoBehaviour>().OfType<IRequireTwinCatHandler>();
+        var elements = FindObjectsOfType<SimulationObject>().OfType<IRequireTwinCatHandler>();
         foreach(var element in elements)
         {
             element.TwinCatHandler = twinCatHandler;
